@@ -9,17 +9,45 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+// ⚠️ UPDATE THIS - Add your actual Netlify URL
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://tasty-bites-official.netlify.app/', // ⚠️ REPLACE THIS
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"] 
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
   }
 });
 
-// Middleware
-app.use(cors());
+// Middleware - UPDATED CORS
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    
+    console.log('❌ Blocked by CORS:', origin); // Debug log
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Server is running' });
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -29,7 +57,7 @@ app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/admin', require('./routes/admin'));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://bhanu:1234@nodeexpress.vkh6d.mongodb.net/dheeraj?retryWrites=true&w=majority&appName=nodeExpress")
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.log('MongoDB Connection Error:', err));
 

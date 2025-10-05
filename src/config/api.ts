@@ -1,8 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://tasty-bites-1.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://tasty-bites-1.onrender.com';
 
-export const API_CONFIG = {
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-};
+console.log('🔗 API URL:', API_BASE_URL); // Debug log
 
 export default API_BASE_URL;

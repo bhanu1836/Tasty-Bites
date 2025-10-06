@@ -5,7 +5,7 @@ import { useCart } from '../../contexts/CartContext';
 import { ShoppingCart, User, LogOut, Home, Menu, Star, ChefHat, Settings } from 'lucide-react';
 
 const Navbar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuth(); 
   const { totalItems } = useCart();
   const navigate = useNavigate();
 

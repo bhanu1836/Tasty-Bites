@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Clock, Phone, MapPin } from 'lucide-react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios'; // ✅ Import your axios instance
 
 interface SpecialItem {
   _id: string;
@@ -22,7 +22,8 @@ const Home: React.FC = () => {
 
   const fetchSpecialItems = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/menu/specials');
+      // ✅ FIXED - Use axiosInstance instead of axios
+      const response = await axiosInstance.get('/api/menu/specials');
       setSpecialItems(response.data.specialOfDay);
       setRecommendedItems(response.data.recommended);
     } catch (error) {

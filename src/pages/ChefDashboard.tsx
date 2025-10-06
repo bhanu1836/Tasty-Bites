@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, AlertCircle, ToggleLeft, ToggleRight } from 'lucide-react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios'; // ✅ Import axios instance
+import API_BASE_URL from '../config/api'; // ✅ For Socket.IO
 import toast from 'react-hot-toast';
 import { io, Socket } from 'socket.io-client';
 
 interface Order {
   _id: string;
   customerName: string;
-  customerPhone: string;
+  customerPhone: string; 
   customerAddress: string;
   deliveryNotes: string;
   items: Array<{
@@ -43,7 +44,7 @@ const ChefDashboard: React.FC = () => {
     fetchMenuItems();
     
     // Setup Socket.IO
-    const socketConnection = io('http://localhost:5000');
+    const socketConnection = io(API_BASE_URL); // ✅ Fixed
     setSocket(socketConnection);
     
     socketConnection.emit('join-chef');
@@ -60,7 +61,7 @@ const ChefDashboard: React.FC = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/orders');
+      const response = await axiosInstance.get('/api/orders'); // ✅ Fixed
       setOrders(response.data);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -69,7 +70,7 @@ const ChefDashboard: React.FC = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/menu');
+      const response = await axiosInstance.get('/api/menu'); // ✅ Fixed
       setMenuItems(response.data);
     } catch (error) {
       console.error('Error fetching menu items:', error);
@@ -78,7 +79,7 @@ const ChefDashboard: React.FC = () => {
 
   const updateOrderStatus = async (orderId: string, status: string) => {
     try {
-      await axios.patch(`http://localhost:5000/api/orders/${orderId}/status`, { status });
+      await axiosInstance.patch(`/api/orders/${orderId}/status`, { status }); // ✅ Fixed
       setOrders(prev => 
         prev.map(order => 
           order._id === orderId ? { ...order, status: status as any } : order
@@ -97,7 +98,7 @@ const ChefDashboard: React.FC = () => {
 
   const toggleItemAvailability = async (itemId: string, isAvailable: boolean) => {
     try {
-      await axios.patch(`http://localhost:5000/api/menu/${itemId}/availability`, { isAvailable });
+      await axiosInstance.patch(`/api/menu/${itemId}/availability`, { isAvailable }); // ✅ Fixed
       setMenuItems(prev =>
         prev.map(item =>
           item._id === itemId ? { ...item, isAvailable } : item

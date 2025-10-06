@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios'; // ✅ Import axios instance
 import toast from 'react-hot-toast';
 
 const Cart: React.FC = () => {
@@ -12,7 +12,7 @@ const Cart: React.FC = () => {
   const [orderForm, setOrderForm] = useState({
     customerName: '',
     customerPhone: '',
-    customerAddress: '',
+    customerAddress: '', 
     deliveryNotes: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,7 +54,7 @@ const Cart: React.FC = () => {
         totalAmount
       };
       
-      const response = await axios.post('http://localhost:5000/api/orders', orderData);
+      const response = await axiosInstance.post('/api/orders', orderData); // ✅ Fixed
       
       toast.success('Order placed successfully!');
       clearCart();

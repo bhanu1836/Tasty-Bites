@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    username: '',
+    username: '', 
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);

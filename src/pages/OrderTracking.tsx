@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Clock, CheckCircle, Truck, MapPin, Phone } from 'lucide-react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios'; // ✅ Import axios instance
+import API_BASE_URL from '../config/api'; // ✅ For Socket.IO
 import { io, Socket } from 'socket.io-client';
 
 interface Order {
@@ -10,7 +11,7 @@ interface Order {
   customerPhone: string;
   customerAddress: string;
   deliveryNotes: string;
-  items: Array<{
+  items: Array<{ 
     menuItem: {
       _id: string;
       name: string;
@@ -35,7 +36,7 @@ const OrderTracking: React.FC = () => {
       fetchOrder();
       
       // Setup Socket.IO for real-time updates
-      const socketConnection = io('http://localhost:5000');
+      const socketConnection = io(API_BASE_URL); // ✅ Fixed
       setSocket(socketConnection);
       
       socketConnection.on('order-status-changed', (data) => {
@@ -53,7 +54,7 @@ const OrderTracking: React.FC = () => {
   const fetchOrder = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/orders/${orderId}`);
+      const response = await axiosInstance.get(`/api/orders/${orderId}`); // ✅ Fixed
       setOrder(response.data);
     } catch (error) {
       console.error('Error fetching order:', error);

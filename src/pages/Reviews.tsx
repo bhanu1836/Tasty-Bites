@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Star, MessageCircle, User } from 'lucide-react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios'; // ✅ Import axios instance
 import toast from 'react-hot-toast';
 
 interface Review {
@@ -8,7 +8,7 @@ interface Review {
   customerName: string;
   customerEmail: string;
   orderId?: string;
-  menuItem?: {
+  menuItem?: { 
     _id: string;
     name: string;
   };
@@ -47,7 +47,7 @@ const Reviews: React.FC = () => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/reviews');
+      const response = await axiosInstance.get('/api/reviews'); // ✅ Fixed
       setReviews(response.data);
     } catch (error) {
       console.error('Error fetching reviews:', error);
@@ -58,7 +58,7 @@ const Reviews: React.FC = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/menu');
+      const response = await axiosInstance.get('/api/menu'); // ✅ Fixed
       setMenuItems(response.data);
     } catch (error) {
       console.error('Error fetching menu items:', error);
@@ -83,7 +83,7 @@ const Reviews: React.FC = () => {
         ...(reviewType === 'item' && selectedMenuItem && { menuItem: selectedMenuItem })
       };
       
-      await axios.post('http://localhost:5000/api/reviews', reviewData);
+      await axiosInstance.post('/api/reviews', reviewData); // ✅ Fixed
       toast.success('Review submitted successfully!');
       
       setShowReviewForm(false);

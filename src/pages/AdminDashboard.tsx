@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Line, Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { DollarSign, ShoppingBag, TrendingUp, Users, Plus, CreditCard as Edit, Trash2, Star, ToggleLeft, ToggleRight } from 'lucide-react';
-import axios from 'axios';
+import { Plus, Edit, Trash2, Users, ShoppingBag, DollarSign, TrendingUp, ToggleLeft, ToggleRight } from 'lucide-react';
+import axiosInstance from '../utils/axios'; // ✅ Import axios instance
 import toast from 'react-hot-toast';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line, Bar } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -46,7 +36,7 @@ interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: string;
+  category: string; 
   isAvailable: boolean;
   isSpecialOfDay: boolean;
   isRecommended: boolean;
@@ -93,7 +83,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/analytics');
+      const response = await axiosInstance.get('/api/admin/analytics'); // ✅ Fixed
       setAnalytics(response.data);
     } catch (error) {
       console.error('Error fetching analytics:', error);
@@ -102,7 +92,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/menu');
+      const response = await axiosInstance.get('/api/menu'); // ✅ Fixed
       setMenuItems(response.data);
     } catch (error) {
       console.error('Error fetching menu items:', error);
@@ -111,7 +101,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchChefs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/chefs');
+      const response = await axiosInstance.get('/api/admin/chefs'); // ✅ Fixed
       setChefs(response.data);
     } catch (error) {
       console.error('Error fetching chefs:', error);
@@ -123,10 +113,10 @@ const AdminDashboard: React.FC = () => {
     
     try {
       if (editingItem) {
-        await axios.put(`http://localhost:5000/api/menu/${editingItem._id}`, menuForm);
+        await axiosInstance.put(`/api/menu/${editingItem._id}`, menuForm); // ✅ Fixed
         toast.success('Menu item updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/api/menu', menuForm);
+        await axiosInstance.post('/api/menu', menuForm); // ✅ Fixed
         toast.success('Menu item added successfully!');
       }
       
@@ -146,23 +136,10 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleEditItem = (item: MenuItem) => {
-    setEditingItem(item);
-    setMenuForm({
-      name: item.name,
-      description: item.description,
-      price: item.price,
-      category: item.category,
-      isSpecialOfDay: item.isSpecialOfDay,
-      isRecommended: item.isRecommended
-    });
-    setShowMenuForm(true);
-  };
-
   const handleDeleteItem = async (itemId: string) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/menu/${itemId}`);
+        await axiosInstance.delete(`/api/menu/${itemId}`); // ✅ Fixed
         toast.success('Menu item deleted successfully!');
         fetchMenuItems();
       } catch (error) {
@@ -173,7 +150,7 @@ const AdminDashboard: React.FC = () => {
 
   const toggleChefStatus = async (chefId: string, isActive: boolean) => {
     try {
-      await axios.patch(`http://localhost:5000/api/admin/chefs/${chefId}/status`, { isActive });
+      await axiosInstance.patch(`/api/admin/chefs/${chefId}/status`, { isActive }); // ✅ Fixed
       setChefs(prev =>
         prev.map(chef =>
           chef._id === chefId ? { ...chef, isActive } : chef
@@ -189,7 +166,7 @@ const AdminDashboard: React.FC = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:5000/api/auth/register', chefForm);
+      await axiosInstance.post('/api/auth/register', chefForm); // ✅ Fixed
       toast.success('Staff member created successfully!');
       setShowChefForm(false);
       setChefForm({
@@ -203,7 +180,7 @@ const AdminDashboard: React.FC = () => {
       toast.error('Failed to create staff member');
     }
   };
-
+  
   const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
-import axios from 'axios';
+import axiosInstance from '../utils/axios'; // ✅ Import axios instance
 import toast from 'react-hot-toast';
 
 interface MenuItem {
@@ -12,7 +12,7 @@ interface MenuItem {
   category: string;
   image?: string;
   isAvailable: boolean;
-  ingredients?: string[];
+  ingredients?: string[]; 
   nutritionInfo?: {
     calories: number;
     protein: number;
@@ -34,7 +34,7 @@ const Menu: React.FC = () => {
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/menu');
+      const response = await axiosInstance.get('/api/menu'); // ✅ Fixed
       setMenuItems(response.data);
     } catch (error) {
       console.error('Error fetching menu items:', error);
